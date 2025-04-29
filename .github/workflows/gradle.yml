@@ -1,0 +1,70 @@
+name: BoundingBox CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 23
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '23'
+
+      - name: Cache Gradle files
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle.kts', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            gradle-${{ runner.os }}-
+
+      - name: Grant execute permissions for Gradle
+        run: chmod +x ./gradlew
+
+      - name: Clean Project
+        run: ./gradlew clean
+
+      - name: Run Tests
+        run: ./gradlew test
+
+      - name: Build Project
+        run: ./gradlew build
+
+      - name: Create Executable Launcher (bash/zsh compatible)
+        run: |
+          LAUNCHER=app/build/libs/bounding-box
+          JAR=app/build/libs/bounding-box.jar
+
+          echo '#!/bin/sh' > "$LAUNCHER"
+          echo 'exec java -jar "$0" "$@"' >> "$LAUNCHER"
+          cat "$JAR" >> "$LAUNCHER"
+          chmod +x "$LAUNCHER"
+
+      - name: Move Executable to Artifacts Folder
+        run: |
+          mkdir -p artifacts
+          mv app/build/libs/bounding-box artifacts/
+
+      - name: Verify the Executable Exists
+        run: ls -lh artifacts/
+
+      - name: Upload Raw Executable in zip file
+        uses: actions/upload-artifact@v4
+        with:
+          name: bounding-box
+          path: artifacts/bounding-box
+          if-no-files-found: error
+          compression-level: 0
+          overwrite: true
