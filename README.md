@@ -16,7 +16,7 @@ The program should find a box (or boxes) in the input with the following propert
 group being horizontally or vertically (but not diagonally) adjacent to each other. A single, detached asterisk 
 is considered to be a valid box.
 The box should not _strictly_ bound the group, so the coordinates for the box in the following input 
-should be `(2,2)(3,3)` not `(1,1)(4,4)`
+should be `(2,2)(3,3)` not `(1,1)(4,4)`.
     ```
     ----
     -**-
@@ -54,26 +54,26 @@ so the returned coordinates bound the smaller group on the top left.
 
 ## Design/Implementation
 
-Chose to use [DSU (Disjoint Set Union) w/ Union Find](https://en.wikipedia.org/wiki/Disjoint_sets) and [Sweep Line](https://en.wikipedia.org/wiki/Sweep_line_algorithm) algorithms
-instead of the [Depth-first Search (DFS)](https://en.wikipedia.org/wiki/Depth-first_search) due to:
+Chose to use [DSU (Disjoint Set Union) w/ Union Find](https://en.wikipedia.org/wiki/Disjoint_sets) and [Sweep Line](https://en.wikipedia.org/wiki/Sweep_line_algorithm) algorithms,
+instead of, the [Depth-first Search (DFS)](https://en.wikipedia.org/wiki/Depth-first_search) due to:
 
-1. `Efficiency in Grouping`:
+1. `Efficiency in Grouping`
   - DSU's near-constant time per operation _(O(a(N)))_ makes it highly efficient for grouping cells, especially in sparse grids where many cells are not asterisks.
   - DFS, while _O(R⋅C)_, requires explicit traversal and can be slower due to recursive overhead or iterative queue management.
 
-2. `Modularity`:
+2. `Modularity`
   - DSU separates the grouping phase (union operations) from the bounds computation (updating min and max), making the code more modular and easier to maintain.
   - DFS combines exploration and bounds tracking, which can make the code less clean and harder to modify.
 
-3. `Dynamic Updates`:
+3. `Dynamic Updates`
   - DSU's merge operations for bounds (min and max) are efficient and straightforward, allowing easy tracking of bounding box coordinates.
   - DFS requires tracking min/max coordinates during traversal, which adds complexity and may require additional data structures.
 
-4. `Scalability`:
+4. `Scalability`
   - DSU scales well for large grids due to its amortized constant-time operations and lack of recursive overhead.
   - DFS may face stack overflow for very large grids (in recursive implementations) or require careful management in iterative versions.
 
-5. `Code Simplicity`:
+5. `Code Simplicity`
   - DSU's iterative nature and use of maps make it concise for this problem, especially with the merge method for bounds.
   - DFS requires explicit traversal logic, which can be more verbose and error-prone when tracking additional properties like bounds.
 
@@ -81,9 +81,6 @@ In conclusion, `BoundingBox` code efficiently solves the problem using DSU to gr
 to find non-overlapping bounding boxes. The time complexity is approximately _O(R⋅C + K^2)_
 , and the space complexity is _O(R⋅C)_. DSU is preferred over DFS due to its efficiency, modularity, and 
 ease of tracking bounding box coordinates, making it a better fit for this problem's requirements. Sweep Line algorithm finds non-overlapping bounding boxes by processing boxes in order of their x-coordinates.
-
-
-
 
 ---
 
@@ -101,7 +98,7 @@ java version "23.0.2" 2025-01-21
 
 * `Gradle 8.14`
 
-* `Kotlin 2.0.21` Note: (`build.gradle.kts` DSL relies on a Kotlin distribution configured)
+* `Kotlin 2.0.21` (`build.gradle.kts` DSL relies on a Kotlin distribution configured)
 
 ---
 
@@ -120,7 +117,7 @@ Locate `BoundingBox/app/build/libs/bounding-jar` and invoke the following comman
 Run via [GitHub Actions](https://github.com/unnsse/BoundingBox/actions) CI/CD
 e.g.
 
-Here's the first link to the first ever (and successful) [run](https://github.com/unnsse/BoundingBox/actions/runs/14742728397). 
+Here's the link to the first ever (and successful) [run](https://github.com/unnsse/BoundingBox/actions/runs/14742728397). 
 
 
 
