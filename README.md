@@ -108,9 +108,9 @@ java version "23.0.2" 2025-01-21
 
 `./gradlew clean build`
 
-Locate `BoundingBox/app/build/libs/bounding-jar` and invoke the following command:
+Locate `BoundingBox/app/build/libs/bounding-box` and invoke the following command:
 
-`./bounding-box < groups.txt` (the data input files are located inside `BoundingBox/app/src/main/resources`)
+`./bounding-box < groups.txt` (the data input files are located inside `BoundingBox/app/src/test/resources`)
 
 ### Run via GitHub Actions and download the generated artifact file. 
 
