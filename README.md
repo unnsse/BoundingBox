@@ -114,13 +114,19 @@ Locate `BoundingBox/app/build/libs/bounding-jar` and invoke the following comman
 
 ### Run via GitHub Actions and download the generated artifact file. 
 
-Run via [GitHub Actions](https://github.com/unnsse/BoundingBox/actions) CI/CD
-e.g.
+1. Run via [GitHub Actions](https://github.com/unnsse/BoundingBox/actions) CI/CD
 
-Here's the link to the first ever (and successful) [run](https://github.com/unnsse/BoundingBox/actions/runs/14742728397). 
+2. Once downloaded, unzip the artifact:
 
+```bash
+unzip bounding-box.zip
+```
 
+3. Test data using `stdin`
 
+```
+./bounding-box < groups.txt
+(1,1)(2,2)
+```
 
-
-
+Here's the link to the first successful [run](https://github.com/unnsse/BoundingBox/actions/runs/14742728397).
