@@ -97,4 +97,11 @@ public class BoundingBoxTest {
         List<String> lines = readInput("disconnected.txt");
         assertEquals("(1,1)(1,1)", boundingBox.largestNonOverlappingBox(lines));
     }
+
+    @Test
+    void testBadChar() throws Exception {
+        BoundingBox boundingBox = new BoundingBox();
+        List<String> lines = readInput("bad_char.txt");
+        assertEquals("Error", boundingBox.largestNonOverlappingBox(lines));
+    }
 }
