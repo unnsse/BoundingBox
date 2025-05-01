@@ -58,13 +58,12 @@ public class BoundingBox {
     }
 
     public String largestNonOverlappingBox(List<String> lines) {
-        if (lines == null || lines.isEmpty() || lines.getFirst().isEmpty()) return "";
+        if (lines == null || lines.isEmpty() || lines.get(0).isEmpty()) return "";
 
-        int rows = lines.size(), cols = lines.getFirst().length();
+        int rows = lines.size(), cols = lines.get(0).length();
 
-        if (!lines.stream().allMatch(l -> l.length() == cols)) return "Error";
-
-        if (lines.stream().anyMatch(l -> !l.matches("[*-]+"))) {
+        // Validate that all lines have the same length and only contain valid characters (* and -)
+        if (!lines.stream().allMatch(l -> l.length() == cols && l.matches("[*-]+"))) {
             return "Error";
         }
 
@@ -75,8 +74,14 @@ public class BoundingBox {
                 .forEach(p -> unionCell(p, rows, cols, lines, ds));
 
         IntStream.range(0, rows * cols)
+                .boxed()
+                .sorted(Comparator.naturalOrder())
                 .filter(p -> lines.get(p / cols).charAt(p % cols) == '*')
-                .forEach(p -> ds.updateBounds(ds.find(p), p / cols + 1, p % cols + 1));
+                .forEachOrdered(p -> {
+                    int root = ds.find(p);
+                    int x = p / cols, y = p % cols;
+                    ds.updateBounds(root, x + 1, y + 1);
+                });
 
         var boxes = ds.min.keySet().stream()
                 .map(root -> new Box(ds.min.get(root), ds.max.get(root)))
