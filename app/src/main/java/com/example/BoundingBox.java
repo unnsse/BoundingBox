@@ -61,9 +61,9 @@ public class BoundingBox {
         if (lines == null || lines.isEmpty() || lines.getFirst().isEmpty()) return "";
 
         int rows = lines.size(), cols = lines.getFirst().length();
+
         if (!lines.stream().allMatch(l -> l.length() == cols)) return "";
 
-        // Check for invalid characters
         if (lines.stream().anyMatch(l -> !l.matches("[*-]+"))) {
             return "Error";
         }
@@ -92,6 +92,7 @@ public class BoundingBox {
                 .toList();
 
         var nonOverlapping = new ArrayList<Box>();
+
         processEvents(events, 0, new TreeSet<>(Comparator
                 .comparing((Box b) -> b.topLeft().y())
                 .thenComparing(b -> b.topLeft().x())), nonOverlapping);

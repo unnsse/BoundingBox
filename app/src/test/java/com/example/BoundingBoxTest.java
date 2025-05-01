@@ -5,13 +5,21 @@ import org.junit.jupiter.api.Test;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BoundingBoxTest {
 
     private List<String> readInput(String resourceFileName) throws Exception {
-        Path path = Path.of(getClass().getClassLoader().getResource(resourceFileName).toURI());
-        return Files.readAllLines(path);
+        Path path = Path.of(Objects.requireNonNull(getClass().getClassLoader()
+                                                             .getResource(resourceFileName))
+                                                             .toURI());
+        return Files.readAllLines(path)
+                    .stream()
+                    .map(String::trim)
+                    .filter(line -> !line.isEmpty())
+                    .collect(Collectors.toList());
     }
 
     @Test
