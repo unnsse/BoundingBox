@@ -22,6 +22,13 @@ public class BoundingBox {
         public String toString() {
             return topLeft.toString() + bottomRight.toString();
         }
+
+        boolean overlaps(Box other) {
+            return !(bottomRight.x() < other.topLeft.x() ||
+                    topLeft.x() > other.bottomRight.x() ||
+                    bottomRight.y() < other.topLeft.y() ||
+                    topLeft.y() > other.bottomRight.y());
+        }
     }
 
     static class DisjointSet {
@@ -57,7 +64,7 @@ public class BoundingBox {
         }
     }
 
-    public String largestNonOverlappingBox(List<String> lines) {
+    public String largestNonOverlappingBox(List<String> lines, boolean returnAllBoxes) {
         if (lines == null || lines.isEmpty() || lines.get(0).isEmpty()) return "";
 
         int rows = lines.size(), cols = lines.get(0).length();
@@ -80,7 +87,7 @@ public class BoundingBox {
                 .forEachOrdered(p -> {
                     int root = ds.find(p);
                     int x = p / cols, y = p % cols;
-                    ds.updateBounds(root, x + 1, y + 1);
+                    ds.updateBounds(root, x + 1, y + 1); // 1-based indexing
                 });
 
         var boxes = ds.min.keySet().stream()
@@ -97,17 +104,28 @@ public class BoundingBox {
                 .toList();
 
         var nonOverlapping = new ArrayList<Box>();
+        var hasOverlap = new boolean[1]; // Single-element array to allow modification in lambda
 
         processEvents(events, 0, new TreeSet<>(Comparator
                 .comparing((Box b) -> b.topLeft().y())
-                .thenComparing(b -> b.topLeft().x())), nonOverlapping);
+                .thenComparing(b -> b.topLeft().x())), nonOverlapping, hasOverlap);
 
-        return nonOverlapping.stream()
-                .min(Comparator.comparing((Box b) -> b.topLeft().x())
-                        .thenComparing(b -> b.topLeft().y())
-                        .thenComparingLong(Box::area))
-                .map(Box::toString)
-                .orElse("");
+        if (hasOverlap[0]) return ""; // If any overlap detected, return empty string
+
+        if (returnAllBoxes) {
+            return nonOverlapping.stream()
+                    .sorted(Comparator.comparing((Box b) -> b.topLeft().x())
+                            .thenComparing(b -> b.topLeft().y()))
+                    .map(Box::toString)
+                    .collect(Collectors.joining(""));
+        } else {
+            return nonOverlapping.stream()
+                    .max(Comparator.comparingLong(Box::area)
+                            .thenComparing((Box b) -> b.topLeft().x())
+                            .thenComparing(b -> b.topLeft().y()))
+                    .map(Box::toString)
+                    .orElse("");
+        }
     }
 
     private void unionCell(int p, int rows, int cols, List<String> lines, DisjointSet ds) {
@@ -119,24 +137,26 @@ public class BoundingBox {
     }
 
     private void processEvents(List<Event> events, int index,
-                               TreeSet<Box> active, List<Box> nonOverlapping) {
+                               TreeSet<Box> active, List<Box> nonOverlapping, boolean[] hasOverlap) {
         if (index >= events.size()) {
             nonOverlapping.addAll(active);
             return;
         }
         var e = events.get(index);
         if (e.type() == 1) {
+            // Check for overlaps with all active boxes when adding a new box
+            if (active.stream().anyMatch(b -> b.overlaps(e.box()))) {
+                hasOverlap[0] = true;
+            }
             active.add(e.box());
         } else {
             active.remove(e.box());
-            boolean overlaps = active.stream().anyMatch(b ->
-                    !(e.box().bottomRight().x() < b.topLeft().x() ||
-                            e.box().topLeft().x() > b.bottomRight().x() ||
-                            e.box().bottomRight().y() < b.topLeft().y() ||
-                            e.box().topLeft().y() > b.bottomRight().y()));
-            if (!overlaps) nonOverlapping.add(e.box());
+            // Only add to nonOverlapping if no overlaps have been detected
+            if (!hasOverlap[0] && active.stream().noneMatch(b -> b.overlaps(e.box()))) {
+                nonOverlapping.add(e.box());
+            }
         }
-        processEvents(events, index + 1, active, nonOverlapping);
+        processEvents(events, index + 1, active, nonOverlapping, hasOverlap);
     }
 
     public static void main(String[] args) {
@@ -146,12 +166,12 @@ public class BoundingBox {
         }
 
         List<String> lines = new BufferedReader(new InputStreamReader(System.in))
-                                    .lines()
-                                    .map(String::trim)
-                                    .filter(line -> !line.isEmpty())
-                                    .collect(Collectors.toList());
+                .lines()
+                .map(String::trim)
+                .filter(line -> !line.isEmpty())
+                .collect(Collectors.toList());
 
-        String result = new BoundingBox().largestNonOverlappingBox(lines);
+        String result = new BoundingBox().largestNonOverlappingBox(lines, false); // Default: largest box
         System.out.println(result);
         System.exit(result.equals("Error") ? 1 : 0);
     }
