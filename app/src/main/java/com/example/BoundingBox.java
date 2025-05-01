@@ -141,8 +141,10 @@ public class BoundingBox {
         }
 
         List<String> lines = new BufferedReader(new InputStreamReader(System.in))
-                .lines()
-                .collect(Collectors.toList());
+                                    .lines()
+                                    .map(String::trim)
+                                    .filter(line -> !line.isEmpty())
+                                    .collect(Collectors.toList());
 
         String result = new BoundingBox().largestNonOverlappingBox(lines);
         System.out.println(result);
