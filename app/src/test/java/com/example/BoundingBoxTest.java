@@ -79,13 +79,6 @@ public class BoundingBoxTest {
     }
 
     @Test
-    void testWrongLineLengths() throws Exception {
-        BoundingBox boundingBox = new BoundingBox();
-        List<String> lines = readInput("wrong-line-lengths.txt");
-        assertEquals("", boundingBox.largestNonOverlappingBox(lines));
-    }
-
-    @Test
     void testComplexOverlappingGroups() throws Exception {
         BoundingBox boundingBox = new BoundingBox();
         List<String> lines = readInput("complex-overlappings.txt");
@@ -110,6 +103,13 @@ public class BoundingBoxTest {
     void testBadChar() throws Exception {
         BoundingBox boundingBox = new BoundingBox();
         List<String> lines = readInput("bad_char.txt");
+        assertEquals("Error", boundingBox.largestNonOverlappingBox(lines));
+    }
+
+    @Test
+    void testBadLineLength() throws Exception {
+        BoundingBox boundingBox = new BoundingBox();
+        List<String> lines = readInput("bad_line_length.txt");
         assertEquals("Error", boundingBox.largestNonOverlappingBox(lines));
     }
 }

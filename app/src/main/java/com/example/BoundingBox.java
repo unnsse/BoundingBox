@@ -62,7 +62,7 @@ public class BoundingBox {
 
         int rows = lines.size(), cols = lines.getFirst().length();
 
-        if (!lines.stream().allMatch(l -> l.length() == cols)) return "";
+        if (!lines.stream().allMatch(l -> l.length() == cols)) return "Error";
 
         if (lines.stream().anyMatch(l -> !l.matches("[*-]+"))) {
             return "Error";
