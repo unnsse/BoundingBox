@@ -1,90 +1,58 @@
 # Bounding Box
 
-## Requirements
-This console app takes input from stdin with the following properties:
-- Input is split into lines delimited by newline characters.
-- Every line has the same length.
-- Every line consists of an arbitrary sequence of hyphens ("-") and asterisks ("\*").
-- The final line of input is terminated by a newline character.
+## Overview
 
-Each character in the input will have coordinates defined by `(line number, character number)`, starting at the top and left. So the first character on the first line will have the coordinates `(1,1)` 
-and the fifth character on line 3 will have the coordinates `(3,5)`.
+BoundingBox is a Java program that reads a 2D ASCII grid from standard input and detects 
+the largest or all non-overlapping bounding boxes enclosing contiguous regions of asterisks (*). 
+It is designed to handle large inputs efficiently and uses a Disjoint Set (Union-Find) data structure 
+to identify connected components.
 
-The program should find a box (or boxes) in the input with the following properties:
-- The box must be defined by two pairs of coordinates corresponding to its top left and bottom right corners.
-- It must be the **minimum bounding box** for some contiguous group of asterisks, with each asterisk in the 
-group being horizontally or vertically (but not diagonally) adjacent to each other. A single, detached asterisk 
-is considered to be a valid box.
-The box should not _strictly_ bound the group, so the coordinates for the box in the following input 
-should be `(2,2)(3,3)` not `(1,1)(4,4)`.
-    ```
-    ----
-    -**-
-    -**-
-    ----
-    ```
-- It should not overlap (i.e. share any characters with) any other minimum bounding boxes.
-- Of all the non-overlapping, minimum bounding boxes in the input, _return the largest by area_.
+Each bounding box is defined by the minimum and maximum x and y coordinates 
+(with 1-based indexing)that surround a connected group of * characters.
 
-If any boxes satisfying the conditions can be found in the input, the program should return an exit code
-of 0 and, for each box, print a line to stdout with the two pairs of coordinates.
+### Example Input
 
-So, given the file “groups.txt” with the following content:
+```txt
+*--*
+-**-
+----
+*--*
 ```
-**-------***
--*--**--***-
------***--**
--------***--
-```
+### Output (largest non-overlapping box)
 
-Running this program manually:
-```
-> ./bounding-box < groups.txt
-```
-Outputs:
+`(1,1)(2,4)`
 
-```
-(1,1)(2,2)
-```
+---
 
-This is because the larger groups on the right of the input have overlapping bounding boxes, 
-so the returned coordinates bound the smaller group on the top left.
+## Features
+
+• Detects all connected components of * characters using Union-Find.
+
+• Computes the minimum bounding box for each component.
+
+• Filters for the largest non-overlapping bounding box.
+
+• Optionally returns all non-overlapping boxes in sorted order.
+
+• Handles malformed input with a clear "Error" output.
+
+• Efficient for large grids (10,000 × 10,000).
+
+See [Requirements.md](Requirements.md) for more details.
 
 ---
 
 ## Design/Implementation
 
-Chose to use [DSU (Disjoint Set Union) w/ Union Find](https://en.wikipedia.org/wiki/Disjoint_sets) and [Sweep Line](https://en.wikipedia.org/wiki/Sweep_line_algorithm) algorithms,
-instead of, the [Depth-first Search (DFS)](https://en.wikipedia.org/wiki/Depth-first_search) due to:
+• Uses a Union-Find (DisjointSet) to track connected components of *.
 
-1. `Efficiency in Grouping`
-  - DSU's near-constant time per operation _(O(a(N)))_ makes it highly efficient for grouping cells, especially in sparse grids where many cells are not asterisks.
-  - DFS, while _O(R⋅C)_, requires explicit traversal and can be slower due to recursive overhead or iterative queue management.
+• Calculates bounding box coordinates during the find-union phase.
 
-2. `Modularity`
-  - DSU separates the grouping phase (union operations) from the bounds computation (updating min and max), making the code more modular and easier to maintain.
-  - DFS combines exploration and bounds tracking, which can make the code less clean and harder to modify.
-
-3. `Dynamic Updates`
-  - DSU's merge operations for bounds (min and max) are efficient and straightforward, allowing easy tracking of bounding box coordinates.
-  - DFS requires tracking min/max coordinates during traversal, which adds complexity and may require additional data structures.
-
-4. `Scalability`
-  - DSU scales well for large grids due to its amortized constant-time operations and lack of recursive overhead.
-  - DFS may face stack overflow for very large grids (in recursive implementations) or require careful management in iterative versions.
-
-5. `Code Simplicity`
-  - DSU's iterative nature and use of maps make it concise for this problem, especially with the merge method for bounds.
-  - DFS requires explicit traversal logic, which can be more verbose and error-prone when tracking additional properties like bounds.
-
-In conclusion, `BoundingBox` code efficiently solves the problem using DSU to group contiguous asterisks and a sweep line algorithm 
-to find non-overlapping bounding boxes. The time complexity is approximately _O(R⋅C + K^2)_
-, and the space complexity is _O(R⋅C)_. DSU is preferred over DFS due to its efficiency, modularity, and 
-ease of tracking bounding box coordinates, making it a better fit for this problem's requirements. Sweep Line algorithm finds non-overlapping bounding boxes by processing boxes in order of their x-coordinates.
+• Filters and compares boxes using area and coordinates.
 
 ---
 
-## Technical Requirements
+## Machine / Target Environment
 
 Local / target machine should have the following software installed:
 
@@ -112,21 +80,49 @@ Locate `BoundingBox/app/build/libs/bounding-box` and invoke the following comman
 
 `./bounding-box < groups.txt` (the data input files are located inside `BoundingBox/app/src/test/resources`)
 
-### Run via GitHub Actions and download the generated artifact file. 
+---
+
+### Run via GitHub Actions and download the generated Artifact file. 
 
 1. Run via [GitHub Actions](https://github.com/unnsse/BoundingBox/actions) CI/CD
 
-2. Once downloaded, unzip the artifact:
+2. Once downloaded, unzip the artifact: `unzip bounding-box.zip`
+
+---
+
+## Usage 
 
 ```bash
-unzip bounding-box.zip
+Usage: ./bounding-box < input.txt
+```
+To return all non-overlapping bounding boxes:
+```java
+new BoundingBox().largestNonOverlappingBox(lines, true);
+
 ```
 
-3. Test data using `stdin`
+---
 
-```
-./bounding-box < groups.txt
-(1,1)(2,2)
-```
+## Time and Space Complexity
 
-Here's the link to the first successful [run](https://github.com/unnsse/BoundingBox/actions/runs/14742728397).
+|Operation | Time Complexity | Space Complexity |
+| -------- | --------------- | ---------------- |
+| Parsing and validation | O(n × m) | O(1) |
+| Union-Find operations | O(α(n × m)) amortized | O(n × m) |
+| Bounding box updates |O(k) | O(k) |
+| Box overlap checks | O(k²) | O(k) |
+| Final sorting & filtering | O(k log k) | O(k) |
+
+Where:
+
+• n = number of rows
+
+• m = number of columns 
+
+• k = number of connected components (bounding boxes)
+
+• α is the inverse Ackermann function (nearly constant in practice)
+
+---
+
+Feel free to fork and/or add to this!! :smile: :coffee:
