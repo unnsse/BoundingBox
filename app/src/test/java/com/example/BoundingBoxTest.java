@@ -149,4 +149,11 @@ public class BoundingBoxTest {
         List<String> lines = readInput("overlap2.txt");
         assertEquals("", boundingBox.largestNonOverlappingBox(lines, true));
     }
+
+    @Test
+    void testTripleOverlap() throws Exception {
+        BoundingBox boundingBox = new BoundingBox();
+        List<String> lines = readInput("triple-overlap.txt");
+        assertEquals("", boundingBox.largestNonOverlappingBox(lines, true));
+    }
 }
