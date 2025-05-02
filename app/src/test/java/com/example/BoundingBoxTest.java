@@ -184,4 +184,11 @@ public class BoundingBoxTest {
         List<String> lines = readInput("horizontal_overlap.txt");
         assertEquals("(2,2)(3,3)(2,6)(3,7)", boundingBox.largestNonOverlappingBox(lines, true));
     }
+
+    @Test
+    void testNested() throws Exception {
+        BoundingBox boundingBox = new BoundingBox();
+        List<String> lines = readInput("nested.txt");
+        assertEquals("", boundingBox.largestNonOverlappingBox(lines, true));
+    }
 }
