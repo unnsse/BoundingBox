@@ -6,7 +6,7 @@ This console app takes input from stdin with the following properties:
 
 - Every line has the same length.
 
-- Every line consists of an arbitrary sequence of hyphens ("-") and asterisks ("\*").
+- Every line consists of an arbitrary sequence of hyphens `-` and asterisks `*`.
 
 - The final line of input is terminated by a newline character.
 
@@ -61,7 +61,7 @@ so the returned coordinates bound the smaller group on the top left.
 
 ## Input
 
-• Grid of characters (* and - only).
+• Grid of characters (`*` and `-` only).
 
 • All lines must be of equal length.
 

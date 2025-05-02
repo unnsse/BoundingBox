@@ -3,12 +3,12 @@
 ## Overview
 
 BoundingBox is a Java program that reads a 2D ASCII grid from standard input and detects 
-the largest or all non-overlapping bounding boxes enclosing contiguous regions of asterisks (*). 
+the largest or all non-overlapping bounding boxes enclosing contiguous regions of asterisks (`*`). 
 It is designed to handle large inputs efficiently and uses a Disjoint Set (Union-Find) data structure 
 to identify connected components.
 
-Each bounding box is defined by the minimum and maximum x and y coordinates 
-(with 1-based indexing)that surround a connected group of * characters.
+Each bounding box is defined by the minimum and maximum `x` and `y` coordinates 
+(with 1-based indexing) that surround a connected group of `*` characters.
 
 ### Example Input
 
@@ -26,7 +26,7 @@ Each bounding box is defined by the minimum and maximum x and y coordinates
 
 ## Features
 
-• Detects all connected components of * characters using Union-Find.
+• Detects all connected components of `*` characters using Union-Find.
 
 • Computes the minimum bounding box for each component.
 
@@ -44,7 +44,7 @@ See [Requirements.md](Requirements.md) for more details.
 
 ## Design/Implementation
 
-• Uses a Union-Find (DisjointSet) to track connected components of *.
+• Uses a Union-Find (DisjointSet) to track connected components of `*`.
 
 • Calculates bounding box coordinates during the find-union phase.
 
