@@ -2,13 +2,9 @@ name: BoundingBox CI
 
 on:
   push:
-    branches:
-    - main
-    - 'test_cases_with_boolean_param'
+    branches: [main]
   pull_request:
-    branches:
-    - main
-    - 'test_cases_with_boolean_param'
+    branches: [main]
 
 jobs:
   build:
