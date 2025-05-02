@@ -170,4 +170,11 @@ public class BoundingBoxTest {
         List<String> lines = readInput("no_newline.txt");
         assertEquals("(5,3)(7,4)", boundingBox.largestNonOverlappingBox(lines, true));
     }
+
+    @Test
+    void testDoubleDoubleOverlap() throws Exception {
+        BoundingBox boundingBox = new BoundingBox();
+        List<String> lines = readInput("double-double-overlap.txt");
+        assertEquals("", boundingBox.largestNonOverlappingBox(lines, true));
+    }
 }
