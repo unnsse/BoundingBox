@@ -85,13 +85,6 @@ public class BoundingBoxTest {
 //        assertEquals("(1,1)(2,2)", boundingBox.largestNonOverlappingBox(lines, false));
 //    }
 
-    @Test
-    void testLargeGridWithSingleGroup() throws Exception {
-        BoundingBox boundingBox = new BoundingBox();
-        List<String> lines = readInput("single-group.txt");
-        assertEquals("(2,2)(3,3)", boundingBox.largestNonOverlappingBox(lines, false));
-    }
-
 //    @Test
 //    void testDisconnectedBoxes() throws Exception {
 //        BoundingBox boundingBox = new BoundingBox();

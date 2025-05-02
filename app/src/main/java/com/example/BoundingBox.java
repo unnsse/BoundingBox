@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.stream.*;
 
 public class BoundingBox {
+
     record Point(int x, int y) {
         @Override
         public String toString() {
@@ -57,13 +58,6 @@ public class BoundingBox {
         }
     }
 
-    record Event(int x, int type, Box box) implements Comparable<Event> {
-        @Override
-        public int compareTo(Event other) {
-            return x != other.x ? Integer.compare(x, other.x) : Integer.compare(type, other.type);
-        }
-    }
-
     public String largestNonOverlappingBox(List<String> lines, boolean returnAllBoxes) {
         if (lines == null || lines.isEmpty() || lines.get(0).isEmpty()) return "";
 
@@ -96,29 +90,18 @@ public class BoundingBox {
 
         if (boxes.isEmpty()) return "";
 
-        var events = boxes.stream()
-                .flatMap(box -> Stream.of(
-                        new Event(box.topLeft().x(), 1, box),
-                        new Event(box.bottomRight().x() + 1, -1, box)))
-                .sorted()
-                .toList();
-
-        var nonOverlapping = new ArrayList<Box>();
-        var hasOverlap = new boolean[1]; // Single-element array to allow modification in lambda
-
-        processEvents(events, 0, new TreeSet<>(Comparator
-                .comparing((Box b) -> b.topLeft().y())
-                .thenComparing(b -> b.topLeft().x())), nonOverlapping, hasOverlap);
-
-        if (hasOverlap[0]) return ""; // If any overlap detected, return empty string
+        var nonOverlapping = findNonOverlappingBoxes(boxes);
 
         if (returnAllBoxes) {
+            // Return all non-overlapping boxes, or empty string if any overlap exists
+            if (nonOverlapping.size() < boxes.size()) return ""; // Overlaps detected
             return nonOverlapping.stream()
                     .sorted(Comparator.comparing((Box b) -> b.topLeft().x())
                             .thenComparing(b -> b.topLeft().y()))
                     .map(Box::toString)
                     .collect(Collectors.joining(""));
         } else {
+            // Return the largest non-overlapping box
             return nonOverlapping.stream()
                     .max(Comparator.comparingLong(Box::area)
                             .thenComparing((Box b) -> b.topLeft().x())
@@ -136,27 +119,29 @@ public class BoundingBox {
         if (j < cols - 1 && lines.get(i).charAt(j + 1) == '*') ds.union(p, i * cols + (j + 1));
     }
 
-    private void processEvents(List<Event> events, int index,
-                               TreeSet<Box> active, List<Box> nonOverlapping, boolean[] hasOverlap) {
-        if (index >= events.size()) {
-            nonOverlapping.addAll(active);
-            return;
-        }
-        var e = events.get(index);
-        if (e.type() == 1) {
-            // Check for overlaps with all active boxes when adding a new box
-            if (active.stream().anyMatch(b -> b.overlaps(e.box()))) {
-                hasOverlap[0] = true;
-            }
-            active.add(e.box());
-        } else {
-            active.remove(e.box());
-            // Only add to nonOverlapping if no overlaps have been detected
-            if (!hasOverlap[0] && active.stream().noneMatch(b -> b.overlaps(e.box()))) {
-                nonOverlapping.add(e.box());
-            }
-        }
-        processEvents(events, index + 1, active, nonOverlapping, hasOverlap);
+    private List<Box> findNonOverlappingBoxes(List<Box> boxes) {
+        // Sort boxes by area (descending) to prioritize larger boxes, then by coordinates
+        var sortedBoxes = boxes.stream()
+                .sorted(Comparator.comparingLong(Box::area).reversed()
+                        .thenComparing((Box b) -> b.topLeft().x())
+                        .thenComparing(b -> b.topLeft().y()))
+                .toList();
+
+        var nonOverlapping = new ArrayList<Box>();
+        var used = new boolean[boxes.size()];
+
+        IntStream.range(0, sortedBoxes.size())
+                .filter(i -> !used[i])
+                .forEach(i -> {
+                    nonOverlapping.add(sortedBoxes.get(i));
+                    used[i] = true;
+                    // Mark overlapping boxes as used
+                    IntStream.range(i + 1, sortedBoxes.size())
+                            .filter(j -> !used[j] && sortedBoxes.get(i).overlaps(sortedBoxes.get(j)))
+                            .forEach(j -> used[j] = true);
+                });
+
+        return nonOverlapping;
     }
 
     public static void main(String[] args) {
