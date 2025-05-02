@@ -22,12 +22,12 @@ public class BoundingBoxTest {
                 .collect(Collectors.toList());
     }
 
-//    @Test
-//    void testGroups() throws Exception {
-//        BoundingBox boundingBox = new BoundingBox();
-//        List<String> lines = readInput("groups.txt");
-//        assertEquals("(1,1)(2,2)", boundingBox.largestNonOverlappingBox(lines, false));
-//    }
+    @Test
+    void testGroups() throws Exception {
+        BoundingBox boundingBox = new BoundingBox();
+        List<String> lines = readInput("groups.txt");
+        assertEquals("(1,1)(2,2)", boundingBox.largestNonOverlappingBox(lines, true));
+    }
 
     @Test
     void testSingleRow() throws Exception {
@@ -77,20 +77,6 @@ public class BoundingBoxTest {
         List<String> lines = readInput("single_col.txt");
         assertEquals("(3,1)(4,1)", boundingBox.largestNonOverlappingBox(lines, false));
     }
-
-//    @Test
-//    void testComplexOverlappingGroups() throws Exception {
-//        BoundingBox boundingBox = new BoundingBox();
-//        List<String> lines = readInput("complex-overlappings.txt");
-//        assertEquals("(1,1)(2,2)", boundingBox.largestNonOverlappingBox(lines, false));
-//    }
-
-//    @Test
-//    void testDisconnectedBoxes() throws Exception {
-//        BoundingBox boundingBox = new BoundingBox();
-//        List<String> lines = readInput("disconnected.txt");
-//        assertEquals("(1,1)(1,1)", boundingBox.largestNonOverlappingBox(lines, false));
-//    }
 
     @Test
     void testBadChar() throws Exception {
