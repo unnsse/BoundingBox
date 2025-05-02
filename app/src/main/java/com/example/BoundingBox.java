@@ -58,9 +58,9 @@ public class BoundingBox {
     }
 
     public String largestNonOverlappingBox(List<String> lines, boolean returnAllBoxes) {
-        if (lines == null || lines.isEmpty() || lines.get(0).isEmpty()) return "";
+        if (lines == null || lines.isEmpty() || lines.getFirst().isEmpty()) return "";
 
-        int rows = lines.size(), cols = lines.get(0).length();
+        int rows = lines.size(), cols = lines.getFirst().length();
 
         // Validate that all lines have the same length and only contain valid characters (* and -)
         if (!lines.stream().allMatch(l -> l.length() == cols && l.matches("[*-]+"))) {
@@ -127,11 +127,29 @@ public class BoundingBox {
     }
 
     private void unionCell(int p, int rows, int cols, List<String> lines, DisjointSet ds) {
-        int i = p / cols, j = p % cols;
-        if (i > 0 && lines.get(i - 1).charAt(j) == '*') ds.union(p, (i - 1) * cols + j);
-        if (i < rows - 1 && lines.get(i + 1).charAt(j) == '*') ds.union(p, (i + 1) * cols + j);
-        if (j > 0 && lines.get(i).charAt(j - 1) == '*') ds.union(p, i * cols + (j - 1));
-        if (j < cols - 1 && lines.get(i).charAt(j + 1) == '*') ds.union(p, i * cols + (j + 1));
+        // Convert the 1D index `p` to 2D grid coordinates (i, j)
+        int i = p / cols;  // row index
+        int j = p % cols;  // column index
+
+        // Check the cell above (i - 1, j) if within bounds and is '*'
+        if (i > 0 && lines.get(i - 1).charAt(j) == '*') {
+            ds.union(p, (i - 1) * cols + j);  // Union current cell with the one above
+        }
+
+        // Check the cell below (i + 1, j) if within bounds and is '*'
+        if (i < rows - 1 && lines.get(i + 1).charAt(j) == '*') {
+            ds.union(p, (i + 1) * cols + j);  // Union current cell with the one below
+        }
+
+        // Check the cell to the left (i, j - 1) if within bounds and is '*'
+        if (j > 0 && lines.get(i).charAt(j - 1) == '*') {
+            ds.union(p, i * cols + (j - 1));  // Union current cell with the one to the left
+        }
+
+        // Check the cell to the right (i, j + 1) if within bounds and is '*'
+        if (j < cols - 1 && lines.get(i).charAt(j + 1) == '*') {
+            ds.union(p, i * cols + (j + 1));  // Union current cell with the one to the right
+        }
     }
 
     private List<Box> findNonOverlappingBoxes(List<Box> boxes) {
