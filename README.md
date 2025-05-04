@@ -103,25 +103,11 @@ new BoundingBox().largestNonOverlappingBox(lines, true);
 
 ---
 
-## Time and Space Complexity
+## Article/Blog Entry
 
-|Operation | Time Complexity | Space Complexity |
-| -------- | --------------- | ---------------- |
-| Parsing and validation | O(n × m) | O(1) |
-| Union-Find operations | O(α(n × m)) amortized | O(n × m) |
-| Bounding box updates |O(k) | O(k) |
-| Box overlap checks | O(k²) | O(k) |
-| Final sorting & filtering | O(k log k) | O(k) |
+Wrote detailed article about this experience in my blog:
 
-Where:
-
-• n = number of rows
-
-• m = number of columns 
-
-• k = number of connected components (bounding boxes)
-
-• α is the inverse Ackermann function (nearly constant in practice)
+[2D Matrix Bounding Box Checker Using DSU and Union-Find in Java 23 Using TDD](https://unnsse.io/2025/05/boundingbox_05032025)
 
 ---
 
