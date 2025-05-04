@@ -82,11 +82,13 @@ Locate `BoundingBox/app/build/libs/bounding-box` and invoke the following comman
 
 ---
 
-### Run via GitHub Actions and download the generated Artifact file. 
+### Build using GitHub Actions CI/CD and download the generated Artifact file. 
 
-1. Run via [GitHub Actions](https://github.com/unnsse/BoundingBox/actions) CI/CD
+1. Run via [GitHub Actions](https://github.com/unnsse/BoundingBox/actions) CI/CD.
 
-2. Once downloaded, unzip the artifact: `unzip bounding-box.zip`
+2. Download `bounding-box.zip` artifact from Artifact download URL located in the `Upload Raw Executable in zip file` GitHub Actions step.
+
+3. Once downloaded, unzip the artifact: `unzip bounding-box.zip` and follow the instructions in Usage section below.
 
 ---
 
