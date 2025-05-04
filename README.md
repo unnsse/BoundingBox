@@ -10,6 +10,8 @@ to identify connected components.
 Each bounding box is defined by the minimum and maximum `x` and `y` coordinates 
 (with 1-based indexing) that surround a connected group of `*` characters.
 
+See detailed article: [2D Matrix Bounding Box Checker Using DSU and Union-Find in Java 23 Using TDD](https://unnsse.io/2025/05/boundingbox_05032025)
+
 ### Example Input
 
 ```txt
@@ -26,29 +28,27 @@ Each bounding box is defined by the minimum and maximum `x` and `y` coordinates
 
 ## Features
 
-• Detects all connected components of `*` characters using Union-Find.
+• Reads input text file containing 2D grid from `stdin`.
+
+• Detects all connected components of `*` characters using Disjoint Set Union-Find (DSU).
+
+• Calculates bounding box coordinates during the find-union phase.
 
 • Computes the minimum bounding box for each component.
 
 • Filters for the largest non-overlapping bounding box.
 
+• Filters and compares boxes using area and coordinates.
+
 • Optionally returns all non-overlapping boxes in sorted order.
+
+• Returns empty string if no valid boxes found.
 
 • Handles malformed input with a clear "Error" output.
 
 • Efficient for large grids (10,000 × 10,000).
 
 See [Requirements.md](Requirements.md) for more details.
-
----
-
-## Design/Implementation
-
-• Uses a Union-Find (DisjointSet) to track connected components of `*`.
-
-• Calculates bounding box coordinates during the find-union phase.
-
-• Filters and compares boxes using area and coordinates.
 
 ---
 
@@ -100,14 +100,6 @@ To return all non-overlapping bounding boxes:
 new BoundingBox().largestNonOverlappingBox(lines, true);
 
 ```
-
----
-
-## Article/Blog Entry
-
-Wrote detailed article about this experience in my blog:
-
-[2D Matrix Bounding Box Checker Using DSU and Union-Find in Java 23 Using TDD](https://unnsse.io/2025/05/boundingbox_05032025)
 
 ---
 
