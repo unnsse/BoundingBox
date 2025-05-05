@@ -77,9 +77,13 @@ abstract class CreateShellScriptTask : DefaultTask() {
 
     @TaskAction
     fun createScript() {
-        outputFile.get().writeText("""#!/bin/sh
-java -jar "\$(dirname "\$0")/bounding-box.jar" "\$@"
-""")
+        outputFile.get().writeText(
+            """
+    |#!/bin/sh
+    |DIR="$(cd "$(dirname "$0")" && pwd)"
+    |exec java -jar "${'$'}DIR/bounding-box.jar" "${'$'}@"
+    """.trimMargin()
+        )
         outputFile.get().setExecutable(true)
     }
 }
