@@ -19,6 +19,6 @@ abstract class CreateShellScriptTask : DefaultTask() {
             """.trimMargin()
         )
         file.setExecutable(true)
-        println("Shell script created at: ${file.absolutePath}")
+        logger.lifecycle("Shell script created at: ${file.absolutePath}")
     }
 }
