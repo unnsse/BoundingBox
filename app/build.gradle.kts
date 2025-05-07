@@ -70,26 +70,8 @@ tasks.jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
-// Custom task to create a shell script wrapper compatible with bash and zsh
-abstract class CreateShellScriptTask : DefaultTask() {
-    @get:OutputFile
-    abstract val outputFile: Property<File>
-
-    @TaskAction
-    fun createScript() {
-        outputFile.get().writeText(
-            """
-    |#!/bin/sh
-    |DIR="$(cd "$(dirname "$0")" && pwd)"
-    |exec java -jar "${'$'}DIR/bounding-box.jar" "${'$'}@"
-    """.trimMargin()
-        )
-        outputFile.get().setExecutable(true)
-    }
-}
-
 tasks.register<CreateShellScriptTask>("createShellScript") {
-    outputFile.set(layout.buildDirectory.file("libs/bounding-box").map { it.asFile })
+    outputFile.set(layout.buildDirectory.file("libs/bounding-box"))
 }
 
 // Ensure the shell script is created after the JAR
