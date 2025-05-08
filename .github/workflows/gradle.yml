@@ -3,9 +3,7 @@ name: BoundingBox CI
 
 on:
   push:
-    branches:
-      - main
-      - extract_out_shellscript_task
+    branches: [main]
   pull_request:
     branches: [main]
 
