@@ -60,6 +60,8 @@ tasks.jar {
 }
 
 tasks.register<CreateShellScriptTask>("createShellScript") {
+    group = "build"
+    description = "Creates a Unix shell script to run the bounding-box as an executable (e.g. ./bounding-box)"
     outputFile.set(layout.buildDirectory.file("libs/bounding-box"))
     outputs.upToDateWhen { false }
 }
