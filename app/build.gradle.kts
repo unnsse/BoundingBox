@@ -64,7 +64,10 @@ tasks.register<CreateShellScriptTask>("createShellScript") {
     outputs.upToDateWhen { false }
 }
 
-// Ensure the shell script is created after the JAR
+tasks.named("createShellScript") {
+    mustRunAfter("test")
+}
+
 tasks.build {
     dependsOn("createShellScript")
 }
